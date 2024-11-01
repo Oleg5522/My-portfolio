@@ -1,0 +1,30 @@
+#id1 {
+    text-align: center;
+    font-size: 300%;
+    color: firebrick;
+    background-color: burlywood;
+      
+    
+}
+
+body {
+    background-color: chocolate;
+}
+
+p {
+    font-family: "Playwrite VN", cursive;
+  font-optical-sizing: auto;
+
+}
+
+.one {
+     background-color: crimson;
+}
+
+.main {
+    border: solid 4px;
+}
+
+.main_ing {
+    font-size: larger;
+}
