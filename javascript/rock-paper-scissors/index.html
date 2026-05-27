@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="index.js" defer></script>
+    <title>Rock||Paper||Scissors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id = "play">
+        <div id = "selection">
+            <h1 >Choose: Rock || Paper || Scissors</h1>
+            <button class="choose" data-choise="Rock" >Rock</button>
+            <button class="choose" data-choise="Paper">Paper</button>
+            <button class="choose" data-choise="Scissors">Scissors</button>
+        </div>
+        <div id = "result_on_screen" class = "hidden">
+            <h1 id = "result-text"></h1>
+            <div class="choises">
+                <div class = "choose">
+                    <h2>You chose:</h2>
+                    <img id = "your_choise" src="" alt="your_choise">
+                </div>
+                <div class="choose">
+                    <h2>PC chose:</h2>
+                    <img id = "PC_choise" src="" alt="PC_choise">
+                </div>
+            </div>
+            <button id = "again">Press if you would like to play again</button>
+        </div>
+    </div>
+</body>
+</html>

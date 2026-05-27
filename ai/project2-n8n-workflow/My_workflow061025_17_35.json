@@ -1,0 +1,247 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -20
+      ],
+      "id": "b67722e6-6aa0-4b46-95be-8070c5f738a3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/mnt/host_audio/Lecture05082025_25min.mp3",
+        "options": {
+          "dataPropertyName": "binaryFile"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "eca37e75-b6e7-41d5-84c8-77c37250e4a8",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "binaryFile",
+        "options": {
+          "language": "en"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        160,
+        -20
+      ],
+      "id": "5b09cf66-00e5-4a6e-a6e0-15f9166c00a6",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "XmdAetoKck89scyn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=          Your task is to translate the following English text into Ukrainian.\n          Do not add any commentary or explanations, just provide the Ukrainian translation.\n          English text:\n          \"\"\"\n          {{ $json.text }}\n          \"\"\"\n          Ukrainian translation:"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        300,
+        -140
+      ],
+      "id": "e41842d7-9578-481c-9e7c-86de5953bbb3",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "XmdAetoKck89scyn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=               Зроби коротке резюме (не більше 4000 символів) наступного тексту українською мовою:\n              \"\"\"\n              {{ $('OpenAI1').item.json.message.content }}\n              \"\"\"\n              Резюме:\n                  "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        640,
+        -160
+      ],
+      "id": "9a071f7e-0bd9-4af0-88ae-6c9bf21c6c9d",
+      "name": "OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "XmdAetoKck89scyn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $('OpenAI2').item.json.message.content }}",
+        "voice": "onyx",
+        "options": {
+          "response_format": "mp3",
+          "binaryPropertyOutput": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        880,
+        40
+      ],
+      "id": "7ca5c934-a517-4956-a4a5-9eabf15ecc32",
+      "name": "OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "XmdAetoKck89scyn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/mnt/host_audio/output_results/lecture_summary_uk.mp3",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        620,
+        0
+      ],
+      "id": "229f84b9-bdf2-44be-894a-469025cc0116",
+      "name": "Read/Write Files from Disk1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d2c9c24b-2fcc-4c9d-83c7-8e3d27c16dbb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2e90d2990448b1cc62944f9fc8359729c8f3cbcb5076f67e5479a3a3c71d6d71"
+  },
+  "id": "0vWmjY77AcZxdF3e",
+  "tags": []
+}
